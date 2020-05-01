@@ -1,0 +1,71 @@
+.main-comp-wrapper{
+    border: 1px solid red;
+    width: 80vw;
+    min-width: 600px;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+canvas{
+    border: blue 1px solid;
+    margin: 0 auto;
+
+}
+
+.nav-modals{
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid blue;
+}
+
+.board-container{
+    width: 600px;
+    margin: 0 auto;
+}
+
+.board-container #gameCanvas{
+    border: 1px solid green;
+    margin: 0 auto;
+}
+
+.instructions-disp{
+    display: none;
+}
+
+.instructions-modal{
+    color: mediumslateblue;
+}
+
+.instructions-modal:hover > .instructions-disp{
+    position: absolute;
+    display: block;
+    width: 20%;
+    background-color: orange;
+    z-index: 5;
+}
+
+
+.hi{
+    color: red;
+}
+
+.td-tittle{
+    color: blueviolet;
+    text-align: center;
+    font-family: cursive;
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.player-container{
+    margin-top: 20px;
+    width: 100%;
+}
+
+#money-container, #health-container{
+    width: 50%;
+    text-align: center;
+    color: blueviolet;
+    font-size: 25px;
+    font-weight: 600;
+}
