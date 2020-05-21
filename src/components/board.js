@@ -23,6 +23,17 @@ export default class TowerDefenseBoard {
         // this.allBoxes["empty"] = true;
       }
     }
+    Object.values(this.allBoxes[0]).forEach((box) => {
+      box[2] = false;
+    });
+    Object.values(this.allBoxes[Object.values(this.allBoxes).length - 1]).forEach((box) => {
+      box[2] = false;
+    })
+    for (let x = 0; x < 30; x++) {
+      this.allBoxes[x][0][2] = false;
+      this.allBoxes[x][10][2] = false;
+      this.allBoxes[x][19][2] = false;
+    }
 
     // this.handleOnclick = this.handleOnclick.bind(this);
     // this.ctx.beginPath();
@@ -37,9 +48,9 @@ export default class TowerDefenseBoard {
 
     //path
     this.ctx.beginPath();
-    // this.ctx.fillStyle = "red";
     this.ctx.rect(0, this.dimensions.height / 2, this.dimensions.width - 1, 20);
-    // this.ctx.fill();
+    this.ctx.fillStyle = "white";
+    this.ctx.fill();
     this.ctx.stroke();
     this.ctx.closePath();
     
