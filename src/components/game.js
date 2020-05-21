@@ -72,7 +72,7 @@ export default class TowerDefenseGame {
             document.getElementById("money-container").textContent = "Money: " + this.money + "$"
             target_box[2] = false;
             this.drawTurret1(target_box[0],target_box[1]);
-        }
+        } 
     }   
 }
 
