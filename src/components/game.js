@@ -10,11 +10,14 @@ export default class TowerDefenseGame {
 
         this.health = 10;
         this.money = 200;
+        this.enemies = [];
         document.getElementById("money-container").textContent = "Money: " + this.money + "$"
         document.getElementById("health-container").textContent = "Health: " + this.health
         this.handleClickPlaceUnit = this.handleClickPlaceUnit.bind(this);
         canvas.addEventListener("click", this.handleClickPlaceUnit);
         this.incrementMoney()
+        this.spawnEnemies = this.spawnEnemies.bind(this)
+        this.spawnEnemies();
     }
 
     restart(){
@@ -22,12 +25,23 @@ export default class TowerDefenseGame {
         this.board = new TowerDefenseBoard(this.canvas);
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
-        this.enemies = new Enemies(this.canvas);
-        this.enemies.drawEnemy(this.ctx);
+        // this.enemies = new Enemies(this.canvas);
+        // this.enemies.drawEnemy(this.ctx);
     }
 
     start(){
         this.isOver = false;
+    }
+
+    newEnemy(){
+        this.enemies.push(new Enemies(this.canvas))
+        // debugger
+    }
+
+    spawnEnemies(){
+        setInterval(() => {
+          this.newEnemy()}, 1688
+        )
     }
 
     drawTurret1(x,y){
