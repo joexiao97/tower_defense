@@ -10,11 +10,16 @@ export default class TowerDefenseGame {
 
         this.health = 10;
         this.money = 200;
+        this.enemies = [];
         document.getElementById("money-container").textContent = "Money: " + this.money + "$"
         document.getElementById("health-container").textContent = "Health: " + this.health
         this.handleClickPlaceUnit = this.handleClickPlaceUnit.bind(this);
         canvas.addEventListener("click", this.handleClickPlaceUnit);
         this.incrementMoney()
+        this.spawnEnemies = this.spawnEnemies.bind(this)
+        this.spawnEnemies();
+        this.checkEndPoint = this.checkEndPoint.bind(this);
+        this.checkEndPoint();
     }
 
     restart(){
@@ -22,12 +27,45 @@ export default class TowerDefenseGame {
         this.board = new TowerDefenseBoard(this.canvas);
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
-        this.enemies = new Enemies(this.canvas);
-        this.enemies.drawEnemy(this.ctx);
+        // this.enemies = new Enemies(this.canvas);
+        // this.enemies.drawEnemy(this.ctx);
     }
 
     start(){
         this.isOver = false;
+    }
+
+    newEnemy(){
+        this.enemies.push(new Enemies(this.canvas))
+    }
+
+    spawnEnemies(){
+        setInterval(() => {
+          this.newEnemy()}, 1688
+        )
+    }
+
+    checkEndPoint() {
+        setInterval(() => {
+        this.checkEnemy()}, 100
+        )
+    }
+
+    checkEnemy(){
+        const endGoal = this.dimensions.width
+        let health = this.health;
+        debugger
+        this.enemies = this.enemies.map((enemy) => {
+            if (enemy.x >= endGoal){
+                health -= 1;
+                return undefined
+            }else{
+                return enemy
+            }
+        })
+        this.enemies = this.enemies.filter((enemy) => enemy !== undefined);
+        this.health = health
+        document.getElementById("health-container").textContent = "Health: " + this.health
     }
 
     drawTurret1(x,y){
