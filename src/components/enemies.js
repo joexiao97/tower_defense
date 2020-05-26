@@ -25,9 +25,8 @@ export default class Enemies {
     this.x = 0;
     this.y = this.dimensions.height;
     this.dx = ENEMY1.speed;
+    this.enemyReachedGoal = false;
     this.moveEnemies();
-    // this.spawnEnemies = this.spawnEnemies.bind(this);
-    // this.spawnEnemies();
   };
 
   drawEnemy(){
@@ -44,9 +43,5 @@ export default class Enemies {
         requestAnimationFrame(this.moveEnemies.bind(this));
     };    
 
-    // spawnEnemies(){
-    //     setInterval( () =>{
-    //       this.moveEnemies(), 1688;
-    //     })
-    // }
+  
 }

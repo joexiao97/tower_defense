@@ -18,6 +18,8 @@ export default class TowerDefenseGame {
         this.incrementMoney()
         this.spawnEnemies = this.spawnEnemies.bind(this)
         this.spawnEnemies();
+        this.checkEndPoint = this.checkEndPoint.bind(this);
+        this.checkEndPoint();
     }
 
     restart(){
@@ -35,13 +37,35 @@ export default class TowerDefenseGame {
 
     newEnemy(){
         this.enemies.push(new Enemies(this.canvas))
-        // debugger
     }
 
     spawnEnemies(){
         setInterval(() => {
           this.newEnemy()}, 1688
         )
+    }
+
+    checkEndPoint() {
+        setInterval(() => {
+        this.checkEnemy()}, 100
+        )
+    }
+
+    checkEnemy(){
+        const endGoal = this.dimensions.width
+        let health = this.health;
+        debugger
+        this.enemies = this.enemies.map((enemy) => {
+            if (enemy.x >= endGoal){
+                health -= 1;
+                return undefined
+            }else{
+                return enemy
+            }
+        })
+        this.enemies = this.enemies.filter((enemy) => enemy !== undefined);
+        this.health = health
+        document.getElementById("health-container").textContent = "Health: " + this.health
     }
 
     drawTurret1(x,y){
