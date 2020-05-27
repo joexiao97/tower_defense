@@ -17,7 +17,7 @@ export default class TowerDefenseBoard {
         this.ctx.rect(x * 20, y * 20, 20, 20);
         this.ctx.stroke();
         this.ctx.closePath();
-        this.allBoxes[x][y] = [x* 20,y *20,true]
+        this.allBoxes[x][y] = [x* 20,y *20,true, null]
         // this.allBoxes["x"] = x*20;
         // this.allBoxes["y"] = y*20;
         // this.allBoxes["empty"] = true;
