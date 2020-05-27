@@ -1,5 +1,25 @@
 import TowerDefenseBoard from "./board";
 import Enemies from "./enemies"
+import Turrets from "./turrets";
+
+const ENEMY1 = {
+    hp: 10,
+    speed: .6,
+    reward: 10
+}
+
+const ENEMY2 = {
+    hp: 15,
+    speed: 0.4,
+    reward: 20
+};
+
+const ENEMY3 = {
+    hp: 30,
+    speed: 0.3,
+    reward: 50
+};
+
 
 export default class TowerDefenseGame {
 
@@ -20,6 +40,8 @@ export default class TowerDefenseGame {
         this.spawnEnemies();
         this.checkEndPoint = this.checkEndPoint.bind(this);
         this.checkEndPoint();
+        this.intervalCheckFire = this.intervalCheckFire.bind(this);
+        this.intervalCheckFire();
     }
 
     restart(){
@@ -27,21 +49,19 @@ export default class TowerDefenseGame {
         this.board = new TowerDefenseBoard(this.canvas);
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
-        // this.enemies = new Enemies(this.canvas);
-        // this.enemies.drawEnemy(this.ctx);
     }
 
     start(){
         this.isOver = false;
     }
 
-    newEnemy(){
-        this.enemies.push(new Enemies(this.canvas))
+    newEnemy1(){
+        this.enemies.push(new Enemies(this.canvas, ENEMY1))
     }
 
     spawnEnemies(){
         setInterval(() => {
-          this.newEnemy()}, 1688
+          this.newEnemy1()}, 1688
         )
     }
 
@@ -54,8 +74,13 @@ export default class TowerDefenseGame {
     checkEnemy(){
         const endGoal = this.dimensions.width
         let health = this.health;
+        let money = this.money;
         debugger
         this.enemies = this.enemies.map((enemy) => {
+            if(enemy.hp <= 0){
+                money += 5;
+                return undefined
+            }
             if (enemy.x >= endGoal){
                 health -= 1;
                 return undefined
@@ -66,6 +91,9 @@ export default class TowerDefenseGame {
         this.enemies = this.enemies.filter((enemy) => enemy !== undefined);
         this.health = health
         document.getElementById("health-container").textContent = "Health: " + this.health
+        this.money = money;
+        document.getElementById("money-container").textContent = "Money: " + this.money + "$"
+
     }
 
     drawTurret1(x,y){
@@ -93,7 +121,7 @@ export default class TowerDefenseGame {
         setInterval( (() => {
             this.money += 1;
             document.getElementById("money-container").textContent = "Money: " + this.money + "$"
-        }), 368);
+        }), 1368);
     }
 
     handleClickPlaceUnit(e){
@@ -109,8 +137,36 @@ export default class TowerDefenseGame {
             this.money -= 50;
             document.getElementById("money-container").textContent = "Money: " + this.money + "$"
             target_box[2] = false;
+            target_box[3] = new Turrets
             this.drawTurret1(target_box[0],target_box[1]);
         } 
     }   
+
+    checkEnemiesInRange(){
+        Object.values(this.board.allBoxes).forEach((col) => {
+            Object.values(col).forEach((box) => {
+                if(box[3] !== null){
+                    // box[3].range
+                    let enemiesInRange = []
+                    this.enemies.forEach((enemy) => {
+                        if ((enemy.x < box[0] + 20 * box[3].range) && (enemy.x > box[0] - 20 * box[3].range)){
+                            enemiesInRange.push(enemy)
+                        }
+                    })
+                    if(enemiesInRange.length >= 1){
+                        enemiesInRange[0].hp -= box[3].damage
+                    }
+                }
+            })
+        })
+    }
+
+    intervalCheckFire() {
+        setInterval((() => {
+            this.checkEnemiesInRange()
+        }), 1000);
+    }
+
+
 }
 
