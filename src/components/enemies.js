@@ -26,6 +26,8 @@ export default class Enemies {
     this.y = this.dimensions.height;
     this.dx = enemy.speed;
     this.hp = enemy.hp;
+    this.maxHP = enemy.maxHP;
+    this.inrange = enemy.inrange;
     this.reward = enemy.reward;
     this.moveEnemies1();
   };
@@ -35,6 +37,7 @@ export default class Enemies {
       this.ctx.fillRect(this.x, this.y / 2 ,20, 20);
       this.ctx.fillStyle = "yellow";
       this.ctx.fill();
+      this.ctx.closePath();
     };
 
     drawDeadEnemy(){
@@ -42,6 +45,14 @@ export default class Enemies {
       this.ctx.fillRect(this.x, this.y / 2, 20, 20);
       this.ctx.fillStyle = "white";
       this.ctx.fill();
+      this.ctx.closePath();
+    }
+    hitEnemy(){
+      this.ctx.beginPath();
+      this.ctx.fillRect(this.x, this.y / 2, 20, 20);
+      this.ctx.fillStyle = "red";
+      this.ctx.fill();
+      this.ctx.closePath();
     }
   // drawEnemy2() {
   //   this.ctx.beginPath();
@@ -61,6 +72,9 @@ export default class Enemies {
       this.x += this.dx;
       if(this.hp <= 0){
         this.drawDeadEnemy();
+      }
+      else if(this.hp < this.maxHP && this.hp > 0){
+        this.hitEnemy();
       }
       else{
         this.drawEnemy1();

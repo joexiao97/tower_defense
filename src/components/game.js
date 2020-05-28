@@ -4,8 +4,10 @@ import Turrets from "./turrets";
 
 const ENEMY1 = {
     hp: 10,
+    maxHP: 10,
     speed: .6,
-    reward: 10
+    reward: 10,
+    inrange: false
 }
 
 const ENEMY2 = {
@@ -31,6 +33,10 @@ export default class TowerDefenseGame {
         this.health = 10;
         this.money = 200;
         this.enemies = [];
+        this.checkClear;
+        this.clearSpawn;
+        this.clearMoney;
+        this.alerted = false;
         document.getElementById("money-container").textContent = "Money: " + this.money + "$"
         document.getElementById("health-container").textContent = "Health: " + this.health
         this.handleClickPlaceUnit = this.handleClickPlaceUnit.bind(this);
@@ -42,6 +48,8 @@ export default class TowerDefenseGame {
         this.checkEndPoint();
         this.intervalCheckFire = this.intervalCheckFire.bind(this);
         this.intervalCheckFire();
+        this.harderEnemies = this.harderEnemies.bind(this);
+        this.harderEnemies();
     }
 
     restart(){
@@ -60,22 +68,34 @@ export default class TowerDefenseGame {
     }
 
     spawnEnemies(){
-        setInterval(() => {
+        this.clearSpawn = setInterval(() => {
           this.newEnemy1()}, 1688
         )
     }
 
     checkEndPoint() {
-        setInterval(() => {
+        this.checkClear = setInterval(() => {
         this.checkEnemy()}, 100
         )
+    }
+
+    harderEnemies(){
+        setInterval(() => {
+            ENEMY1.hp += 2;
+            ENEMY1.speed += .2;
+            ENEMY1.maxHP += 2;
+        }, 20000)
+    }
+
+    gameOver(){
+        this.alerted = true;
+        alert("You lose! Please refresh to play again!")
     }
 
     checkEnemy(){
         const endGoal = this.dimensions.width
         let health = this.health;
         let money = this.money;
-        debugger
         this.enemies = this.enemies.map((enemy) => {
             if(enemy.hp <= 0){
                 money += 5;
@@ -83,6 +103,13 @@ export default class TowerDefenseGame {
             }
             if (enemy.x >= endGoal){
                 health -= 1;
+                if (health <= 0 && !this.alerted) {
+                    document.getElementById("health-container").textContent = "Health: " + 0;
+                    clearInterval(this.checkClear);
+                    clearInterval(this.clearSpawn);
+                    clearInterval(this.clearMoney);
+                    this.gameOver();
+                }
                 return undefined
             }else{
                 return enemy
@@ -90,7 +117,11 @@ export default class TowerDefenseGame {
         })
         this.enemies = this.enemies.filter((enemy) => enemy !== undefined);
         this.health = health
-        document.getElementById("health-container").textContent = "Health: " + this.health
+        if(this.health <= 0){
+            document.getElementById("health-container").textContent = "Health: " + 0
+        }else{
+            document.getElementById("health-container").textContent = "Health: " + this.health
+        }
         this.money = money;
         document.getElementById("money-container").textContent = "Money: " + this.money + "$"
 
@@ -117,8 +148,16 @@ export default class TowerDefenseGame {
         this.ctx.fillRect(x, y, 20, 20);
     }
 
+    // drawProjectile(enemyX, enemyY, turrX, turrY){
+    //     this.ctx.beginPath();
+    //     this.ctx.moveTo(turrX, turrY);
+    //     this.ctx.lineTo(enemyX, enemyY);
+    //     this.ctx.stroke();
+    //     // debugger
+    // }
+
     incrementMoney(){
-        setInterval( (() => {
+        this.clearMoney = setInterval( (() => {
             this.money += 1;
             document.getElementById("money-container").textContent = "Money: " + this.money + "$"
         }), 1368);
@@ -154,7 +193,8 @@ export default class TowerDefenseGame {
                         }
                     })
                     if(enemiesInRange.length >= 1){
-                        enemiesInRange[0].hp -= box[3].damage
+                        // this.drawProjectile(enemiesInRange[0].x , enemiesInRange[0].y , box[0], box[1]);
+                        enemiesInRange[0].hp -= box[3].damage;
                     }
                 }
             })
