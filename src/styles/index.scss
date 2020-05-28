@@ -1,13 +1,14 @@
 .main-comp-wrapper{
-    border: 1px solid red;
+    border: 8px skyblue solid;
     width: 80vw;
     min-width: 600px;
-    height: 100vh;
+    height: 93vh;
     margin: 0 auto;
+    font-family: sans-serif;
 }
 
 canvas{
-    border: blue 1px solid;
+    border: blue 2px solid;
     margin: 0 auto;
 
 }
@@ -15,7 +16,7 @@ canvas{
 .nav-modals{
     display: flex;
     justify-content: space-evenly;
-    border: 1px solid blue;
+    border: 2px solid steelblue;
 }
 
 .board-container{
@@ -42,6 +43,8 @@ canvas{
     width: 20%;
     background-color: orange;
     z-index: 5;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 
@@ -68,4 +71,16 @@ canvas{
     color: blueviolet;
     font-size: 25px;
     font-weight: 600;
+}
+
+.footer{
+    width: 50%;
+    margin: 0 auto;
+    background: lightblue;
+    padding: 15px 5px;
+    border: 2px solid cornflowerblue;
+    border-radius: 8px;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: space-evenly;
 }
