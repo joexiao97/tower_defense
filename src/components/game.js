@@ -1,25 +1,56 @@
 import TowerDefenseBoard from "./board";
 import Enemies from "./enemies"
-import Turrets from "./turrets";
+import Turret from "./turrets";
 
 const ENEMY1 = {
     hp: 10,
     maxHP: 10,
     speed: .6,
     reward: 10,
-    inrange: false
+    inrange: false,
+    color: "yellow"
 }
 
 const ENEMY2 = {
     hp: 15,
+    maxHP: 15,
     speed: 0.4,
-    reward: 20
+    reward: 15,
+    inrange: false,
+    color: "brown"
 };
 
 const ENEMY3 = {
     hp: 30,
-    speed: 0.3,
-    reward: 50
+    maxHP: 30,
+    speed: 0.6,
+    reward: 50,
+    inrange: false,
+    color: "black"
+};
+
+const TURRET1 = {
+    damage: 2,
+    range: 3,
+    attackSpeed: 2,
+    color: "lightblue",
+    cost: 50,
+}
+
+const TURRET2 = {
+    damage: 3,
+    range: 3,
+    attackSpeed: 3,
+    color: "purple",
+    cost: 150
+};
+
+const TURRET3 = {
+    damage: 3,
+    range: 4,
+    attackSpeed: 5,
+    color: "orange",
+    cost: 300
 };
 
 
@@ -29,10 +60,13 @@ export default class TowerDefenseGame {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.dimensions = { width: canvas.width, height: canvas.height };
+        this.board = new TowerDefenseBoard(this.canvas);
 
         this.health = 10;
         this.money = 200;
+        this.turrets = [];
         this.enemies = [];
+        this.projectiles = [];
         this.checkClear;
         this.clearSpawn;
         this.clearMoney;
@@ -57,6 +91,7 @@ export default class TowerDefenseGame {
         this.board = new TowerDefenseBoard(this.canvas);
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
+        this.animate();
     }
 
     start(){
@@ -72,6 +107,23 @@ export default class TowerDefenseGame {
           this.newEnemy1()}, 1688
         )
     }
+
+    animate(){
+        this.board.drawBoard();
+        this.enemies.forEach((enemy) => {
+            enemy.drawEnemy();
+            enemy.moveEnemy();
+        })
+        this.turrets.forEach((turret) =>{
+            turret.drawTurret(this.ctx);
+        })
+        this.projectiles.forEach((ownProps) =>{
+            ownProps.turret.drawProjectile(ownProps.ctx, ownProps.enemyX, ownProps.enemyY)
+        })
+        this.projectiles = [];
+        requestAnimationFrame(this.animate.bind(this));
+    }
+
 
     checkEndPoint() {
         this.checkClear = setInterval(() => {
@@ -127,35 +179,6 @@ export default class TowerDefenseGame {
 
     }
 
-    drawTurret1(x,y){
-        this.ctx.beginPath();
-        this.ctx.fillStyle = "lightblue";
-        this.ctx.fill();
-        this.ctx.fillRect(x, y , 20, 20);
-    }
-
-    drawTurret2(x, y) {
-        this.ctx.beginPath();
-        this.ctx.fillStyle = "purple";
-        this.ctx.fill();
-        this.ctx.fillRect(x, y, 20, 20);
-    }
-
-    drawTurret3(x, y) {
-        this.ctx.beginPath();
-        this.ctx.fillStyle = "orange";
-        this.ctx.fill();
-        this.ctx.fillRect(x, y, 20, 20);
-    }
-
-    // drawProjectile(enemyX, enemyY, turrX, turrY){
-    //     this.ctx.beginPath();
-    //     this.ctx.moveTo(turrX, turrY);
-    //     this.ctx.lineTo(enemyX, enemyY);
-    //     this.ctx.stroke();
-    //     // debugger
-    // }
-
     incrementMoney(){
         this.clearMoney = setInterval( (() => {
             this.money += 1;
@@ -175,30 +198,32 @@ export default class TowerDefenseGame {
         if(target_box[2] && this.money >= 50){
             this.money -= 50;
             document.getElementById("money-container").textContent = "Money: " + this.money + "$"
+            this.turrets.push(new Turret(target_box[0],target_box[1], TURRET1))
             target_box[2] = false;
-            target_box[3] = new Turrets
-            this.drawTurret1(target_box[0],target_box[1]);
         } 
     }   
 
     checkEnemiesInRange(){
-        Object.values(this.board.allBoxes).forEach((col) => {
-            Object.values(col).forEach((box) => {
-                if(box[3] !== null){
-                    // box[3].range
-                    let enemiesInRange = []
-                    this.enemies.forEach((enemy) => {
-                        if ((enemy.x < box[0] + 20 * box[3].range) && (enemy.x > box[0] - 20 * box[3].range)){
-                            enemiesInRange.push(enemy)
-                        }
-                    })
-                    if(enemiesInRange.length >= 1){
-                        // this.drawProjectile(enemiesInRange[0].x , enemiesInRange[0].y , box[0], box[1]);
-                        enemiesInRange[0].hp -= box[3].damage;
-                    }
+        this.turrets.forEach((turret) => {
+            let enemiesInRange = []
+            this.enemies.forEach((enemy) => {
+                if ((enemy.x < turret.posX + 20 * turret.range) && (enemy.x > turret.posX - 20 * turret.range)){
+                    enemiesInRange.push(enemy)
                 }
-            })
-        })
+                // debugger
+                if(enemiesInRange.length >= 1){
+                    this.projectiles.push({turret: turret, ctx: this.ctx, enemyX: enemiesInRange[0].x, enemyY:enemiesInRange[0].posY})
+                    enemiesInRange[0].hp -= turret.damage;
+                }
+            }
+        )})
+    }
+
+    drawProjectile(enemyX, enemyY, turrX, turrY) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(turrX, turrY);
+        this.ctx.lineTo(enemyX, enemyY);
+        this.ctx.stroke();
     }
 
     intervalCheckFire() {

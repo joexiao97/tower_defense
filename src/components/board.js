@@ -9,18 +9,21 @@ export default class TowerDefenseBoard {
     
     this.width = this.dimensions.width / 20
     this.height = this.dimensions.height / 20
+  }
+
+  drawBoard(){
 
     for(let x = 0; x < this.width; x++){
       this.allBoxes[x] = {};
       for(let y = 0; y < this.height; y++){
         this.ctx.beginPath();
+        this.ctx.fillStyle = "white";
+        this.ctx.lineWidth = "1";
+        this.ctx.strokeStyle = "black";
         this.ctx.rect(x * 20, y * 20, 20, 20);
         this.ctx.stroke();
-        this.ctx.closePath();
-        this.allBoxes[x][y] = [x* 20,y *20,true, null]
-        // this.allBoxes["x"] = x*20;
-        // this.allBoxes["y"] = y*20;
-        // this.allBoxes["empty"] = true;
+        this.ctx.fill();
+        this.allBoxes[x][y] = [x* 20,y *20,true, null];
       }
     }
     Object.values(this.allBoxes[0]).forEach((box) => {
@@ -34,6 +37,10 @@ export default class TowerDefenseBoard {
       this.allBoxes[x][10][2] = false;
       this.allBoxes[x][19][2] = false;
     }
+    // border
+    this.ctx.strokeStyle = "orange";
+    this.ctx.lineWidth = "40";
+    this.ctx.strokeRect(-1, -1, this.dimensions.width +1, this.dimensions.height +1);
 
     // this.handleOnclick = this.handleOnclick.bind(this);
     // this.ctx.beginPath();
@@ -50,15 +57,9 @@ export default class TowerDefenseBoard {
     this.ctx.beginPath();
     this.ctx.rect(0, this.dimensions.height / 2, this.dimensions.width - 1, 20);
     this.ctx.fillStyle = "white";
+    this.ctx.strokeStyle = "black";
+    this.ctx.lineWidth = "1";
     this.ctx.fill();
-    this.ctx.stroke();
-    this.ctx.closePath();
-    
-    //border
-    this.ctx.beginPath();
-    this.ctx.lineWidth = "40";
-    this.ctx.strokeStyle = "orange";
-    this.ctx.rect(0,0, this.dimensions.width, this.dimensions.height)
     this.ctx.stroke();
     this.ctx.closePath();
 
@@ -76,10 +77,9 @@ export default class TowerDefenseBoard {
     this.ctx.fill();
     this.ctx.closePath();
 
-    this.spawnPoint = {x: 0 , y: this.dimensions.height / 2}
-    this.endPoint = {x: this.dimensions.width - 20 , y: this.dimensions.height / 2}
+    this.spawnPoint = {x: 0 , y: this.dimensions.height / 2};
+    this.endPoint = {x: this.dimensions.width - 20 , y: this.dimensions.height / 2};
   }
-
   // handleOnclick(e){
   //   this.canvas.addEventListener("click", () => console.log(e))
   // }

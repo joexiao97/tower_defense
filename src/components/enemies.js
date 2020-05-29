@@ -23,16 +23,16 @@ export default class Enemies {
     this.ctx = canvas.getContext("2d");
     this.dimensions = { width: canvas.width, height: canvas.height };
     this.x = 0;
+    this.posY = 210
     this.y = this.dimensions.height;
     this.dx = enemy.speed;
     this.hp = enemy.hp;
     this.maxHP = enemy.maxHP;
     this.inrange = enemy.inrange;
     this.reward = enemy.reward;
-    this.moveEnemies1();
   };
 
-  drawEnemy1(){
+    drawLiveEnemy(){
       this.ctx.beginPath();
       this.ctx.fillRect(this.x, this.y / 2 ,20, 20);
       this.ctx.fillStyle = "yellow";
@@ -54,45 +54,21 @@ export default class Enemies {
       this.ctx.fill();
       this.ctx.closePath();
     }
-  // drawEnemy2() {
-  //   this.ctx.beginPath();
-  //   this.ctx.fillRect(this.x, this.y / 2, 20, 20);
-  //   this.ctx.fillStyle = "yellow";
-  //   this.ctx.fill();
-  // };
-  // drawEnemy3() {
-  //   this.ctx.beginPath();
-  //   this.ctx.fillRect(this.x, this.y / 2, 20, 20);
-  //   this.ctx.fillStyle = "yellow";
-  //   this.ctx.fill();
-  // };
 
-  moveEnemies1(){
-      this.ctx.clearRect(this.x - 1, this.y / 2, 20, 20);
+  moveEnemy(){
+      // this.ctx.clearRect(this.x, this.y / 2, 20, 20);
       this.x += this.dx;
-      if(this.hp <= 0){
-        this.drawDeadEnemy();
-      }
-      else if(this.hp < this.maxHP && this.hp > 0){
-        this.hitEnemy();
-      }
-      else{
-        this.drawEnemy1();
-      }
-      requestAnimationFrame(this.moveEnemies1.bind(this));
   };
-  // moveEnemies2() {
-  //   this.ctx.clearRect(this.x - 1, this.y / 2, 20, 20);
-  //   this.x += ENEMY2.speed;
-  //   this.drawEnemy2();
-  //   requestAnimationFrame(this.moveEnemies2.bind(this));
-  // }; 
-  // moveEnemies3() {
-  //   this.ctx.clearRect(this.x - 1, this.y / 2, 20, 20);
-  //   this.x += ENEMY3.speed;
-  //   this.drawEnemy3();
-  //   requestAnimationFrame(this.moveEnemies3.bind(this));
-  // };     
 
-  
+  drawEnemy(){
+    // if (this.hp <= 0) {
+    //   this.drawDeadEnemy();
+    // }
+    if (this.hp < this.maxHP && this.hp > 0) {
+      this.hitEnemy();
+    }
+    else {
+      this.drawLiveEnemy();
+    }
+  }  
 }
