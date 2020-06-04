@@ -84,3 +84,21 @@ canvas{
     display: flex;
     justify-content: space-evenly;
 }
+
+.restart-btn{
+    width: auto;
+    padding: 5px;
+    position: relative;
+    border: 2px solid blue;
+    display: inline-block;
+    bottom: 50px;
+    left: 50vw;
+    background-color: lightblue;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.restart-btn:hover{
+    background-color: skyblue;
+    cursor: pointer;
+}

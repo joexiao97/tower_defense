@@ -87,6 +87,8 @@ export default class TowerDefenseGame {
     }
 
     restart(){
+        cancelAnimationFrame(this.requestId);
+        this.requestId = undefined;
         clearInterval(this.checkClear);
         clearInterval(this.clearSpawn);
         clearInterval(this.clearMoney);
@@ -137,7 +139,7 @@ export default class TowerDefenseGame {
             ownProps.turret.drawProjectile(ownProps.ctx, ownProps.enemyX, ownProps.enemyY)
         })
         this.projectiles = [];
-        requestAnimationFrame(this.animate.bind(this));
+        this.requestId = requestAnimationFrame(this.animate.bind(this));
     }
 
 
