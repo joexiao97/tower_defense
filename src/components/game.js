@@ -107,6 +107,7 @@ export default class TowerDefenseGame {
         this.health = 10;
         this.money = 200;
         this.turrets = [];
+        this.alerted = false;
         this.enemies = [];
         this.projectiles = [];
         this.animate();
@@ -159,7 +160,9 @@ export default class TowerDefenseGame {
 
     gameOver(){
         this.alerted = true;
-        alert("You lose! Please refresh to play again!")
+        const modal = document.getElementById("lose-modal");
+        modal.classList.remove('hide');
+
     }
 
     checkEnemy(){

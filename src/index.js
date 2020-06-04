@@ -12,6 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
   restart_btn.addEventListener('click' , e => {
     game.restart();
   });
+
+
+  const modalRestartBtn = document.getElementById("modal-restart-btn");
+  const loseModal = document.getElementById("lose-modal")
+  modalRestartBtn.addEventListener('click', e => {
+    e.preventDefault();
+    loseModal.classList.add('hide');
+    game.restart();
+  });
+
 });
 
 
