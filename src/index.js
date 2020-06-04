@@ -7,6 +7,11 @@ const canvas = document.getElementById("gameCanvas");
 document.addEventListener("DOMContentLoaded", () => {
   const game = new TowerDefenseGame(canvas);
   game.restart();
+
+  const restart_btn = document.getElementById("restart-btn");
+  restart_btn.addEventListener('click' , e => {
+    game.restart();
+  });
 });
 
 

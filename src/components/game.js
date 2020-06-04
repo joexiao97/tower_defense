@@ -60,7 +60,7 @@ export default class TowerDefenseGame {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.dimensions = { width: canvas.width, height: canvas.height };
-        this.board = new TowerDefenseBoard(this.canvas);
+        // this.board = new TowerDefenseBoard(this.canvas);
 
         this.health = 10;
         this.money = 200;
@@ -87,10 +87,26 @@ export default class TowerDefenseGame {
     }
 
     restart(){
+        clearInterval(this.checkClear);
+        clearInterval(this.clearSpawn);
+        clearInterval(this.clearMoney);
+        clearInterval(this.clearHarder);
+        clearInterval(this.clearFire);
+        this.incrementMoney();
+        this.spawnEnemies();
+        this.checkEndPoint();
+        this.intervalCheckFire();
+        this.harderEnemies();
         this.isOver = false;
         this.board = new TowerDefenseBoard(this.canvas);
+        this.board.allBoxes = {};
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
+        this.health = 10;
+        this.money = 200;
+        this.turrets = [];
+        this.enemies = [];
+        this.projectiles = [];
         this.animate();
     }
 
@@ -132,7 +148,7 @@ export default class TowerDefenseGame {
     }
 
     harderEnemies(){
-        setInterval(() => {
+        this.clearHarder = setInterval(() => {
             ENEMY1.hp += 2;
             ENEMY1.speed += .2;
             ENEMY1.maxHP += 2;
@@ -160,6 +176,8 @@ export default class TowerDefenseGame {
                     clearInterval(this.checkClear);
                     clearInterval(this.clearSpawn);
                     clearInterval(this.clearMoney);
+                    clearInterval(this.clearHarder);
+                    clearInterval(this.clearFire);
                     this.gameOver();
                 }
                 return undefined
@@ -227,7 +245,7 @@ export default class TowerDefenseGame {
     }
 
     intervalCheckFire() {
-        setInterval((() => {
+        this.clearFire = setInterval((() => {
             this.checkEnemiesInRange()
         }), 1000);
     }
