@@ -99,6 +99,9 @@ export default class TowerDefenseGame {
         this.checkEndPoint();
         this.intervalCheckFire();
         this.harderEnemies();
+        ENEMY1.hp += 10;
+        ENEMY1.speed = .6;
+        ENEMY1.maxHP = 10;
         this.isOver = false;
         this.board = new TowerDefenseBoard(this.canvas);
         this.board.allBoxes = {};
