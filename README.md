@@ -1,5 +1,5 @@
 # TOWER DEFENSE
-
+[Live Demo](https://joexiao97.github.io/tower_defense/)
 ## 1. Background and Overview
 
 Tower defense is one of the most iconic and most common strategy games out there! Players place turrets or defensive units on the map and when they are ready, they can start the round. The objective is to stop the wave of enemies from reaching their destination. Turrets can be upgraded to become stronger, or sell them for a fraction of the price you paid for it.

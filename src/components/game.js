@@ -30,7 +30,7 @@ const ENEMY3 = {
 };
 
 const TURRET1 = {
-    damage: 2,
+    damage: 2/10,
     range: 3,
     attackSpeed: 2,
     color: "lightblue",
@@ -38,7 +38,7 @@ const TURRET1 = {
 }
 
 const TURRET2 = {
-    damage: 3,
+    damage: 3/10,
     range: 3,
     attackSpeed: 3,
     color: "purple",
@@ -46,7 +46,7 @@ const TURRET2 = {
 };
 
 const TURRET3 = {
-    damage: 3,
+    damage: 3/10,
     range: 4,
     attackSpeed: 5,
     color: "orange",
@@ -60,8 +60,12 @@ export default class TowerDefenseGame {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.dimensions = { width: canvas.width, height: canvas.height };
-        // this.board = new TowerDefenseBoard(this.canvas);
 
+        this.highScore = this.getCookie("highScore")
+        if (this.highScore === "undefined"){
+            this.highScore = 0;
+        }
+        this.currentScore = 0;
         this.health = 10;
         this.money = 200;
         this.turrets = [];
@@ -71,8 +75,10 @@ export default class TowerDefenseGame {
         this.clearSpawn;
         this.clearMoney;
         this.alerted = false;
-        document.getElementById("money-container").textContent = "Money: " + this.money + "$"
-        document.getElementById("health-container").textContent = "Health: " + this.health
+        document.getElementById("money-container").textContent = "Money: " + this.money + "$";
+        document.getElementById("health-container").textContent = "Health: " + this.health;
+        document.getElementById("currentscore-container").textContent = "Current Score: " + this.currentScore;
+        document.getElementById("highscore-container").textContent = "High Score to beat: " + this.highScore;
         this.handleClickPlaceUnit = this.handleClickPlaceUnit.bind(this);
         canvas.addEventListener("click", this.handleClickPlaceUnit);
         this.incrementMoney()
@@ -87,6 +93,7 @@ export default class TowerDefenseGame {
     }
 
     restart(){
+        this.setCookieForHS();
         cancelAnimationFrame(this.requestId);
         this.requestId = undefined;
         clearInterval(this.checkClear);
@@ -99,11 +106,15 @@ export default class TowerDefenseGame {
         this.checkEndPoint();
         this.intervalCheckFire();
         this.harderEnemies();
-        ENEMY1.hp += 10;
+        this.currentScore = 0;
+        this.highScore = this.getCookie("highScore")
+        document.getElementById("currentscore-container").textContent = "Current Score: " + this.currentScore;
+        document.getElementById("highscore-container").textContent = "High Score to beat: " + this.highScore;
+        ENEMY1.hp = 10;
         ENEMY1.speed = .6;
         ENEMY1.maxHP = 10;
         this.isOver = false;
-        this.board = new TowerDefenseBoard(this.canvas);
+        this.board = new TowerDefenseBoard(this.canvas, this.highScore);
         this.board.allBoxes = {};
         this.spawnPoint = this.board.spawnPoint;
         this.endPoint = this.board.endPoint;
@@ -126,7 +137,7 @@ export default class TowerDefenseGame {
 
     spawnEnemies(){
         this.clearSpawn = setInterval(() => {
-          this.newEnemy1()}, 1688
+          this.newEnemy1()}, 1288
         )
     }
 
@@ -158,12 +169,14 @@ export default class TowerDefenseGame {
             ENEMY1.hp += 2;
             ENEMY1.speed += .2;
             ENEMY1.maxHP += 2;
-        }, 20000)
+        }, 10000)
     }
 
     gameOver(){
         this.alerted = true;
         const modal = document.getElementById("lose-modal");
+        document.getElementById("lose-score").textContent = "Your score: " + this.currentScore;
+        document.getElementById("lose-highscore").textContent = "Current Score to beat: " + this.highScore;
         modal.classList.remove('hide');
 
     }
@@ -175,6 +188,8 @@ export default class TowerDefenseGame {
         this.enemies = this.enemies.map((enemy) => {
             if(enemy.hp <= 0){
                 money += 5;
+                this.currentScore += 1;
+                document.getElementById("currentscore-container").textContent = "Current Score: " + this.currentScore;
                 return undefined
             }
             if (enemy.x >= endGoal){
@@ -197,6 +212,7 @@ export default class TowerDefenseGame {
         this.health = health
         if(this.health <= 0){
             document.getElementById("health-container").textContent = "Health: " + 0
+            this.setCookieForHS();
         }else{
             document.getElementById("health-container").textContent = "Health: " + this.health
         }
@@ -236,7 +252,6 @@ export default class TowerDefenseGame {
                 if ((enemy.x < turret.posX + 20 * turret.range) && (enemy.x > turret.posX - 20 * turret.range)){
                     enemiesInRange.push(enemy)
                 }
-                // debugger
                 if(enemiesInRange.length >= 1){
                     this.projectiles.push({turret: turret, ctx: this.ctx, enemyX: enemiesInRange[0].x, enemyY:enemiesInRange[0].posY})
                     enemiesInRange[0].hp -= turret.damage;
@@ -255,9 +270,38 @@ export default class TowerDefenseGame {
     intervalCheckFire() {
         this.clearFire = setInterval((() => {
             this.checkEnemiesInRange()
-        }), 1000);
+        }), 60);
     }
 
+    setCookieForHS() {
+    var d = new Date();
+    d.setTime(d.getTime() + (7 * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
 
+    if(this.highScore === undefined){
+        this.highScore = 0;
+    }
+
+    if(this.currentScore > this.highScore){
+        this.highScore = this.currentScore;
+    }
+    document.cookie = "highScore" + "=" + this.highScore + ";" + expires + ";path=/";
+    }
+
+    getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 }
 

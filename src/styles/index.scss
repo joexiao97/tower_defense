@@ -5,6 +5,7 @@
     height: 93vh;
     margin: 0 auto;
     font-family: sans-serif;
+    display: table;
 }
 
 canvas{
@@ -65,7 +66,7 @@ canvas{
     width: 100%;
 }
 
-#money-container, #health-container{
+#money-container, #health-container, #highscore-container, #currentscore-container{
     width: 50%;
     text-align: center;
     color: blueviolet;

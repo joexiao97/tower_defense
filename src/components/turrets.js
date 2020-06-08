@@ -45,7 +45,7 @@ export default class Turret {
     // ctx.strokeStyle = "black";
     // ctx.linewidth = 40;
     ctx.moveTo(this.posX + 10, this.posY + 10);
-    ctx.lineTo(enemyX, enemyY);
+    ctx.lineTo(enemyX + 10, enemyY);
     ctx.stroke();
     ctx.closePath();
   }
