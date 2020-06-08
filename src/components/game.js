@@ -229,31 +229,29 @@ export default class TowerDefenseGame {
     }
 
     handleClickPlaceUnit(e){
-        //layerX layerY
-        let target_box;
-        Object.values(this.board.allBoxes).forEach((col) => {
-            Object.values(col).forEach((box) => {
-                if ((box[0] < e.layerX && box[0] + 20 > e.layerX) && (box[1] < e.layerY && box[1] + 20 > e.layerY))
-                target_box = box;
+        Object.values(this.board.allBoxes).map((col) => {
+            Object.values(col).map((box) => {
+                if ((box[0] < e.layerX && box[0] + 20 > e.layerX) && (box[1] < e.layerY && box[1] + 20 > e.layerY)){
+                    if(box[2] && this.money >= 50){
+                        this.money -= 50;
+                        document.getElementById("money-container").textContent = "Money: " + this.money + "$";
+                        this.turrets.push(new Turret(box[0],box[1], TURRET1));
+                        box[2] = false;
+                    };
+                }
             })
         })
-        if(target_box[2] && this.money >= 50){
-            this.money -= 50;
-            document.getElementById("money-container").textContent = "Money: " + this.money + "$"
-            this.turrets.push(new Turret(target_box[0],target_box[1], TURRET1))
-            target_box[2] = false;
-        } 
-    }   
+    };
 
     checkEnemiesInRange(){
         this.turrets.forEach((turret) => {
-            let enemiesInRange = []
+            let enemiesInRange = [];
             this.enemies.forEach((enemy) => {
                 if ((enemy.x < turret.posX + 20 * turret.range) && (enemy.x > turret.posX - 20 * turret.range)){
-                    enemiesInRange.push(enemy)
+                    enemiesInRange.push(enemy);
                 }
                 if(enemiesInRange.length >= 1){
-                    this.projectiles.push({turret: turret, ctx: this.ctx, enemyX: enemiesInRange[0].x, enemyY:enemiesInRange[0].posY})
+                    this.projectiles.push({turret: turret, ctx: this.ctx, enemyX: enemiesInRange[0].x, enemyY:enemiesInRange[0].posY});
                     enemiesInRange[0].hp -= turret.damage;
                 }
             }
